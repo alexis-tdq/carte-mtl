@@ -2,7 +2,7 @@
 
 An interactive web map that displays cultural, sporting, and community events happening across the city of Montréal. This project visualizes open data from the Ville de Montréal portal, allowing users to easily discover and filter upcoming events.
 
-**[» View Live Demo](https://palexisd.github.io/carte-mtl/)**
+**[» View Live Demo](https://alexis-tdq.github.io/carte-mtl/)**
 
 ---
 
@@ -37,7 +37,7 @@ To run this project locally, follow these simple steps.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/palexisd/carte-mtl.git](https://github.com/palexisd/carte-mtl.git)
+    git clone [https://github.com/alexis-tdq/carte-mtl.git](https://github.com/alexis-tdq/carte-mtl.git)
     ```
 
 2.  **Navigate to the project directory:**
