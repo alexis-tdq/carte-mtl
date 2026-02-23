@@ -41,6 +41,23 @@ body {
     height: 162px; /* Height for three rows of buttons */
 }
 
+/* --- Zoom Controls (Top Right) --- */
+#zoom-controls-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#zoom-controls-container .map-control-button {
+    position: relative; /* Override absolute positioning for flex layout */
+    top: auto;
+    right: auto;
+}
+
 /* --- Map Control Buttons --- */
 .map-control-button {
     position: absolute; /* Each button is positioned within the container */
@@ -189,6 +206,11 @@ body {
     .filter-control select,
     .filter-control input {
         width: calc(100% - 24px);
+    }
+    
+    /* --- Cacher les boutons de zoom sur mobile --- */
+    #zoom-controls-container {
+        display: none !important;
     }
 }
 

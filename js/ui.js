@@ -227,3 +227,30 @@ export function createAboutModal() {
     });
   }
 }
+
+/**
+ * Creates zoom control buttons (desktop only).
+ * @param {L.Map} map - The Leaflet map instance.
+ */
+export function createZoomControls(map) {
+  const zoomContainer = document.createElement('div');
+  zoomContainer.id = 'zoom-controls-container';
+  
+  // On l'ajoute directement à la div #map
+  document.getElementById('map').appendChild(zoomContainer);
+
+  const zoomInBtn = document.createElement('button');
+  zoomInBtn.className = 'map-control-button';
+  zoomInBtn.title = 'Zoom avant';
+  zoomInBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>`;
+  zoomInBtn.addEventListener('click', () => map.zoomIn());
+
+  const zoomOutBtn = document.createElement('button');
+  zoomOutBtn.className = 'map-control-button';
+  zoomOutBtn.title = 'Zoom arrière';
+  zoomOutBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z"/></svg>`;
+  zoomOutBtn.addEventListener('click', () => map.zoomOut());
+
+  zoomContainer.appendChild(zoomInBtn);
+  zoomContainer.appendChild(zoomOutBtn);
+}

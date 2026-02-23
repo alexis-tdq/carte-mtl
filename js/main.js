@@ -16,6 +16,7 @@ import {
   setFilterControlsFromState,
   createExtraControls,
   createAboutModal,
+  createZoomControls
 } from './ui.js';
 
 // --- Global State ---
@@ -213,9 +214,13 @@ async function main() {
       resetAllFilters
     );
     setFilterControlsFromState(currentFilters);
+    
+    // Create UI controls
     createMapControls(resetAllFilters);
     createExtraControls(panToUserLocation);
+    createZoomControls(map); // <--- Nouveau: Contrôles de zoom
     createAboutModal();
+    
     applyFiltersAndRedraw();
 
     // Handle permalink event after initial draw
