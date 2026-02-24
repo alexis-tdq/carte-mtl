@@ -263,18 +263,24 @@ export function panToUserLocation() {
 export function panAndOpenPopup(eventId) {
   if (markerMap.has(eventId)) {
     const marker = markerMap.get(eventId);
+    
     const openPopup = () => {
       marker.openPopup();
       clearAllHighlights();
+      // Safety check: _icon might be null if the marker is not currently rendered on screen
       if (marker._icon) {
         marker._icon.classList.add('marker-highlight');
       }
     };
 
-    if (marker.__parent) { // If marker is in a cluster
-      marker.__parent.zoomToShowLayer(marker, () => openPopup());
+    // FIX: Use the cluster group instance directly instead of marker.__parent
+    // The library handles checking if it's clustered or not automatically.
+    if (markerClusterGroup) {
+      markerClusterGroup.zoomToShowLayer(marker, openPopup);
     } else {
-      map.flyTo(marker.getLatLng(), map.getZoom() || 15).once('moveend', () => openPopup());
+      // Fallback if for some reason the cluster group isn't ready
+      map.flyTo(marker.getLatLng(), 15);
+      map.once('moveend', openPopup);
     }
   }
 }
