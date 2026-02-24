@@ -1,4 +1,3 @@
-// This module handles UI creation and DOM manipulation.
 import { debounce } from './utils.js';
 
 export const ui = {
@@ -7,15 +6,11 @@ export const ui = {
   filterContainer: document.getElementById('filter-container'),
   toggleButton: null,
   resetButton: null,
-  aboutModal: null, // For the "About" modal
+  aboutModal: null, 
 };
 
 /**
  * Creates and populates the filter controls in the UI.
- * @param {Array} allRecords - The complete list of records to build filter options from.
- * @param {object} currentFilters - The current state of filters.
- * @param {function} onFilterChange - The callback function to execute when a filter changes.
- * @param {function} onReset - The callback function to execute when filters are reset.
  */
 export function createFilterControls(
   allRecords,
@@ -23,21 +18,22 @@ export function createFilterControls(
   onFilterChange,
   onReset
 ) {
-  const boroughs = [
-    ...new Set(allRecords.map((r) => r.arrondissement).filter(Boolean)),
-  ].sort();
-  const eventTypes = [
-    ...new Set(
-      allRecords
-        .map((r) => r.type_evenement)
-        .filter(Boolean)
-        .filter((type) => type !== 'nan')
-    ),
-  ].sort();
-  const emplacements = [
-    ...new Set(allRecords.map((r) => r.emplacement).filter(Boolean)),
-  ].sort();
-  const costs = [...new Set(allRecords.map((r) => r.cout).filter(Boolean))].sort();
+  const boroughsSet = new Set();
+  const eventTypesSet = new Set();
+  const emplacementsSet = new Set();
+  const costsSet = new Set();
+
+  allRecords.forEach(r => {
+      if (r.arrondissement && r.arrondissement !== 'nan') boroughsSet.add(r.arrondissement);
+      if (r.type_evenement && r.type_evenement !== 'nan') eventTypesSet.add(r.type_evenement);
+      if (r.emplacement && r.emplacement !== 'nan') emplacementsSet.add(r.emplacement);
+      if (r.cout && r.cout !== 'nan') costsSet.add(r.cout);
+  });
+
+  const boroughs = [...boroughsSet].sort();
+  const eventTypes = [...eventTypesSet].sort();
+  const emplacements = [...emplacementsSet].sort();
+  const costs = [...costsSet].sort();
 
   ui.filterContainer.innerHTML = `
         <div class="filter-control">
@@ -57,45 +53,51 @@ export function createFilterControls(
             <label for="borough-filter">Arrondissement</label>
             <select id="borough-filter">
                 <option value="all">Tous les arrondissements</option>
-                ${boroughs.map((b) => `<option value="${b}">${b}</option>`).join('')}
             </select>
         </div>
         <div class="filter-control">
             <label for="type-filter">Type d'événement</label>
             <select id="type-filter">
                 <option value="all">Tous les types</option>
-                ${eventTypes
-                  .map((t) => `<option value="${t}">${t}</option>`)
-                  .join('')}
             </select>
         </div>
         <div class="filter-control">
             <label for="emplacement-filter">Lieu</label>
             <select id="emplacement-filter">
                 <option value="all">Tous les lieux</option>
-                ${emplacements
-                  .map((e) => `<option value="${e}">${e}</option>`)
-                  .join('')}
             </select>
         </div>
         <div class="filter-control">
             <label for="cost-filter">Coût</label>
             <select id="cost-filter">
                 <option value="all">Tous les coûts</option>
-                ${costs.map((c) => `<option value="${c}">${c}</option>`).join('')}
             </select>
         </div>
         <button id="reset-filters">Réinitialiser les filtres</button>
     `;
 
+  // Helper to safely append options
+  const populateSelect = (selectId, dataArray) => {
+    const select = document.getElementById(selectId);
+    dataArray.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item;
+        select.appendChild(option);
+    });
+  };
+
+  populateSelect('borough-filter', boroughs);
+  populateSelect('type-filter', eventTypes);
+  populateSelect('emplacement-filter', emplacements);
+  populateSelect('cost-filter', costs);
+
   const debouncedOnFilterChange = debounce(onFilterChange, 300);
 
-  document
-    .getElementById('search-filter')
-    .addEventListener('input', (e) => {
+  document.getElementById('search-filter').addEventListener('input', (e) => {
       currentFilters.search = e.target.value;
       debouncedOnFilterChange();
-    });
+  });
 
   const selects = ui.filterContainer.querySelectorAll('select');
   selects.forEach((select) => {
@@ -117,26 +119,15 @@ export function createFilterControls(
   document.getElementById('reset-filters').addEventListener('click', onReset);
 }
 
-/**
- * Updates the UI form controls to match the current filter state.
- * @param {object} currentFilters The current state of filters.
- */
 export function setFilterControlsFromState(currentFilters) {
   document.getElementById('search-filter').value = currentFilters.search || '';
   document.getElementById('date-filter').value = currentFilters.date || 'all';
-  document.getElementById('borough-filter').value =
-    currentFilters.arrondissement || 'all';
-  document.getElementById('type-filter').value =
-    currentFilters.type_evenement || 'all';
-  document.getElementById('emplacement-filter').value =
-    currentFilters.emplacement || 'all';
+  document.getElementById('borough-filter').value = currentFilters.arrondissement || 'all';
+  document.getElementById('type-filter').value = currentFilters.type_evenement || 'all';
+  document.getElementById('emplacement-filter').value = currentFilters.emplacement || 'all';
   document.getElementById('cost-filter').value = currentFilters.cout || 'all';
 }
 
-/**
- * Creates the main map control buttons (toggle and reset).
- * @param {function} onReset - The callback function to execute when the reset button is clicked.
- */
 export function createMapControls(onReset) {
   const controlsContainer = document.getElementById('map-controls-container');
   
@@ -162,10 +153,6 @@ export function createMapControls(onReset) {
   ui.resetButton.addEventListener('click', onReset);
 }
 
-/**
- * Updates the visibility and style of map controls based on filter state.
- * @param {object} currentFilters The current state of filters.
- */
 export function updateFilterIndicator(currentFilters) {
   const isAnyFilterActive = Object.keys(currentFilters).some(
     (key) => {
@@ -182,10 +169,6 @@ export function updateFilterIndicator(currentFilters) {
   }
 }
 
-/**
- * Creates the geolocation button.
- * @param {function} onGeoLocate - The callback for the geolocation button.
- */
 export function createExtraControls(onGeoLocate) {
   const controlsContainer = document.getElementById('map-controls-container');
   const geoButton = document.createElement('button');
@@ -197,9 +180,6 @@ export function createExtraControls(onGeoLocate) {
   geoButton.addEventListener('click', onGeoLocate);
 }
 
-/**
- * Initializes the "About" modal and its event listeners.
- */
 export function createAboutModal() {
   ui.aboutModal = document.getElementById('about-modal');
   const aboutButton = document.getElementById('about-button');
@@ -207,7 +187,7 @@ export function createAboutModal() {
   const controlsContainer = document.getElementById('map-controls-container');
 
   if (aboutButton && controlsContainer) {
-    controlsContainer.appendChild(aboutButton); // Move the button into the container
+    controlsContainer.appendChild(aboutButton);
   }
 
   if (aboutButton && ui.aboutModal && closeModalButton) {
@@ -219,7 +199,6 @@ export function createAboutModal() {
       ui.aboutModal.classList.add('hidden');
     });
   
-    // Close modal if user clicks on the backdrop
     ui.aboutModal.addEventListener('click', (e) => {
         if (e.target === ui.aboutModal) {
             ui.aboutModal.classList.add('hidden');
@@ -228,15 +207,10 @@ export function createAboutModal() {
   }
 }
 
-/**
- * Creates zoom control buttons (desktop only).
- * @param {L.Map} map - The Leaflet map instance.
- */
 export function createZoomControls(map) {
   const zoomContainer = document.createElement('div');
   zoomContainer.id = 'zoom-controls-container';
   
-  // On l'ajoute directement à la div #map
   document.getElementById('map').appendChild(zoomContainer);
 
   const zoomInBtn = document.createElement('button');

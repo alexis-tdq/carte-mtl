@@ -74,12 +74,9 @@ function filterRecords() {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   return allRecords.filter((record) => {
-    // --- Date Sanity Check (FIXED) ---
     // Only filter out past events if they have a valid end date.
-    // This prevents events without an end date from being hidden.
     if (record.date_fin) {
         const recordEndDate = new Date(record.date_fin);
-        // Check if the parsed date is valid AND if it's in the past.
         if (!isNaN(recordEndDate.getTime()) && recordEndDate < today) {
             return false;
         }
@@ -121,15 +118,12 @@ function checkDateFilter(record) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   
-  // Return true if date filter is not set, or if dates are invalid
   if (!record.date_debut || !record.date_fin) return true;
 
   const recordStartDate = new Date(record.date_debut);
   const recordEndDate = new Date(record.date_fin);
 
-  // Check for invalid date parsing
   if (isNaN(recordStartDate.getTime()) || isNaN(recordEndDate.getTime())) return true;
-
 
   switch (currentFilters.date) {
     case 'today':
@@ -162,7 +156,8 @@ function updateURLWithFilters() {
 
   const queryString = params.toString();
   const newUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
-  history.pushState({}, '', newUrl);
+  
+  history.replaceState({}, '', newUrl);
 }
 
 function readFiltersFromURL() {
@@ -170,7 +165,7 @@ function readFiltersFromURL() {
   params.forEach((value, key) => {
     if (currentFilters.hasOwnProperty(key)) {
         if (key === 'event') {
-            currentFilters[key] = Number(value); // event ID is a number
+            currentFilters[key] = Number(value); 
         } else {
             currentFilters[key] = value;
         }
@@ -196,7 +191,6 @@ async function main() {
         clearAllHighlights();
     });
 
-    // Add listener to close filter menu on map click
     map.on('click', () => {
         if (ui.filterContainer && !ui.filterContainer.classList.contains('hidden')) {
             ui.filterContainer.classList.add('hidden');
@@ -215,15 +209,13 @@ async function main() {
     );
     setFilterControlsFromState(currentFilters);
     
-    // Create UI controls
     createMapControls(resetAllFilters);
     createExtraControls(panToUserLocation);
-    createZoomControls(map); // <--- Nouveau: Contrôles de zoom
+    createZoomControls(map); 
     createAboutModal();
     
     applyFiltersAndRedraw();
 
-    // Handle permalink event after initial draw
     if (currentFilters.event) {
         panAndOpenPopup(currentFilters.event);
     }

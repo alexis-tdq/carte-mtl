@@ -3,13 +3,8 @@ import { config } from './config.js';
 let map;
 let markerClusterGroup;
 let userLocationMarker;
-let markerMap = new Map(); // For permalinks and highlighting
+let markerMap = new Map();
 
-/**
- * Initializes the Leaflet map and returns the map instance.
- * @param {function} onPopupOpen - Callback for when a marker popup opens.
- * @returns {L.Map} The initialized Leaflet map object.
- */
 export function initializeMap(onPopupOpen) {
   map = L.map('map', {
     scrollWheelZoom: false,
@@ -49,11 +44,6 @@ export function initializeMap(onPopupOpen) {
   return map;
 }
 
-/**
- * Creates a marker icon with a size appropriate for the current zoom level.
- * @param {number} zoom The current map zoom level.
- * @returns {L.DivIcon} A Leaflet DivIcon with the correct size.
- */
 export function createMarkerIcon(zoom) {
   let size;
   if (zoom <= 11) {
@@ -73,9 +63,6 @@ export function createMarkerIcon(zoom) {
   });
 }
 
-/**
- * Updates the icon for every marker on the map to match the current zoom level.
- */
 export function updateAllMarkerIcons() {
   if (!map || !markerClusterGroup) return;
   const currentZoom = map.getZoom();
@@ -83,10 +70,6 @@ export function updateAllMarkerIcons() {
   markerClusterGroup.eachLayer((layer) => layer.setIcon(newIcon));
 }
 
-/**
- * Clears existing markers and draws new ones based on the provided records.
- * @param {Array} recordsToDraw The array of records to display on the map.
- */
 export function drawMarkers(recordsToDraw) {
   if (!map) return;
   markerMap.clear();
@@ -121,19 +104,14 @@ export function drawMarkers(recordsToDraw) {
   recordsToDraw.forEach((record) => {
     if (record.lat && record.long) {
       const marker = L.marker([record.lat, record.long], { icon: initialIcon });
-      marker.recordId = record._id; // Attach ID for permalinks
+      marker.recordId = record._id;
       marker.bindPopup(createPopupContent(record));
       markerClusterGroup.addLayer(marker);
-      markerMap.set(record._id, marker); // Store marker for easy access
+      markerMap.set(record._id, marker);
     }
   });
 }
 
-/**
- * Generates the HTML content for a marker's popup.
- * @param {object} record The data record for the marker.
- * @returns {string} The HTML content string.
- */
 function createPopupContent(record) {
   let content = `<div class="custom-popup"><b>${
     record.titre || 'Sans titre'
@@ -185,7 +163,6 @@ function createPopupContent(record) {
     content += `<br><b>Adresse :</b><br>${addressInfo}`;
   }
 
-  // "Get Directions" link
   if (record.lat && record.long) {
     content += `<br><a href="https://www.google.com/maps/dir/?api=1&destination=${record.lat},${record.long}" target="_blank">Itinéraire</a>`;
   }
@@ -197,12 +174,14 @@ function createPopupContent(record) {
   return content;
 }
 
-/**
- * Pans to the user's current location with improved error handling.
- */
 export function panToUserLocation() {
   if (!navigator.geolocation) {
-    alert("La géolocalisation n'est pas supportée par votre navigateur.");
+    const geoMsg = document.getElementById('geo-error-message');
+    if(geoMsg) {
+        geoMsg.querySelector('p').textContent = "La géolocalisation n'est pas supportée par votre navigateur.";
+        geoMsg.classList.remove('hidden');
+        setTimeout(() => geoMsg.classList.add('hidden'), 4000);
+    }
     return;
   }
 
@@ -232,34 +211,18 @@ export function panToUserLocation() {
   };
 
   const error = (err) => {
-    let message = "Impossible d'obtenir votre position.\n\n";
-    switch (err.code) {
-      case err.PERMISSION_DENIED:
-        message += "Vous avez refusé la demande de géolocalisation. Veuillez l'activer dans les réglages de votre navigateur et de votre téléphone.";
-        break;
-      case err.POSITION_UNAVAILABLE:
-        message += "L'information de localisation est actuellement indisponible.";
-        break;
-      case err.TIMEOUT:
-        message += "La demande de géolocalisation a expiré.";
-        break;
-      default:
-        message += "Une erreur inconnue est survenue.";
-        break;
+    console.warn("Geolocation error:", err);
+    const geoMsg = document.getElementById('geo-error-message');
+    if(geoMsg) {
+        geoMsg.querySelector('p').textContent = "Impossible d'obtenir votre position. Vérifiez vos permissions.";
+        geoMsg.classList.remove('hidden');
+        setTimeout(() => geoMsg.classList.add('hidden'), 4000);
     }
-    // Note: Using alert() for simplicity. For a better UX, 
-    // you could replace this with a custom modal dialog.
-    alert(message);
   };
 
   navigator.geolocation.getCurrentPosition(success, error, options);
 }
 
-
-/**
- * Finds a marker by its event ID, pans to it, and opens its popup.
- * @param {number} eventId The unique ID of the event record.
- */
 export function panAndOpenPopup(eventId) {
   if (markerMap.has(eventId)) {
     const marker = markerMap.get(eventId);
@@ -267,28 +230,20 @@ export function panAndOpenPopup(eventId) {
     const openPopup = () => {
       marker.openPopup();
       clearAllHighlights();
-      // Safety check: _icon might be null if the marker is not currently rendered on screen
       if (marker._icon) {
         marker._icon.classList.add('marker-highlight');
       }
     };
 
-    // FIX: Use the cluster group instance directly instead of marker.__parent
-    // The library handles checking if it's clustered or not automatically.
     if (markerClusterGroup) {
       markerClusterGroup.zoomToShowLayer(marker, openPopup);
     } else {
-      // Fallback if for some reason the cluster group isn't ready
       map.flyTo(marker.getLatLng(), 15);
       map.once('moveend', openPopup);
     }
   }
 }
 
-/**
- * Adds a highlight class to a specific marker.
- * @param {number} eventId The ID of the event marker to highlight.
- */
 export function highlightMarker(eventId) {
     clearAllHighlights();
     if (markerMap.has(eventId)) {
@@ -299,9 +254,6 @@ export function highlightMarker(eventId) {
     }
 }
 
-/**
- * Removes the highlight class from all markers.
- */
 export function clearAllHighlights() {
     markerMap.forEach(marker => {
         if(marker._icon) {

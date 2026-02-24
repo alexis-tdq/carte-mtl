@@ -3,17 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carte des Événements de Montréal</title>
+    
+    <title>Carte des Événements de Montréal | Tech du Quartier</title>
+    <meta name="description" content="Découvrez tous les événements culturels, sportifs et communautaires à Montréal avec cette carte interactive gratuite offerte par Tech du Quartier.">
+    <meta name="keywords" content="événements, Montréal, carte interactive, culture, activités, sorties, Tech du Quartier">
+    <meta name="author" content="Tech du Quartier">
+
+    <!-- Open Graph / Facebook / iMessage -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://techduquartier.ca/">
+    <meta property="og:title" content="Carte des Événements de Montréal | Tech du Quartier">
+    <meta property="og:description" content="Découvrez tous les événements à Montréal avec cette carte interactive gratuite offerte par Tech du Quartier.">
+    <meta property="og:image" content="https://techduquartier.ca/images/social/social-preview.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Carte des Événements de Montréal | Tech du Quartier">
+    <meta name="twitter:description" content="Découvrez tous les événements à Montréal avec cette carte interactive gratuite offerte par Tech du Quartier.">
+    <meta name="twitter:image" content="https://techduquartier.ca/images/social/social-preview.png">
 
     <link rel="icon" type="image/svg" href="img/favicon.svg">
+    <!-- Using the same favicon as the main site as a fallback -->
+    <link rel="apple-touch-icon" href="https://techduquartier.ca/images/favicon/favicon.svg">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Floating Logo linking to main site -->
+    <a href="https://techduquartier.ca" target="_blank" id="brand-logo-link" title="Visitez Tech du Quartier">
+        <img src="https://techduquartier.ca/images/logo/logo_tdq_white.svg" alt="Tech du Quartier Logo" />
+    </a>
+
     <!-- Filter Panel -->
     <div id="filter-container" class="hidden"></div>
 
@@ -28,6 +52,9 @@
         <div id="api-error-message" class="map-message hidden">
             <p>Impossible de charger les données pour le moment. Veuillez réessayer plus tard.</p>
         </div>
+        <div id="geo-error-message" class="map-message hidden">
+            <p>Impossible d'obtenir votre position. Vérifiez vos permissions.</p>
+        </div>
     </div>
 
     <!-- About Button (will be moved into the container by JS) -->
@@ -39,10 +66,13 @@
     <div id="about-modal" class="modal-container hidden">
         <div class="modal-content">
             <button id="close-modal-button" class="close-button">&times;</button>
-            <h2>À propos de la Carte des Événements de Montréal</h2>
-            <p>Cette carte interactive a été conçue pour vous aider à découvrir les événements culturels, sportifs et communautaires qui se déroulent à Montréal. Toutes les informations sont tirées directement du portail des <a href="https://donnees.montreal.ca/" target="_blank">données ouvertes de la Ville de Montréal</a>.</p>
-            <p>Utilisez les filtres pour affiner votre recherche par date, arrondissement, type d'événement, et plus encore. Cliquez sur un marqueur pour obtenir tous les détails sur un événement, y compris les descriptions, les horaires et les liens pertinents.</p>
-            <p>Ce projet est open source. Vous pouvez consulter le code source sur <a href="https://github.com/alexis-tdq/carte-mtl" target="_blank">GitHub</a>.</p>
+            <h2>À propos de la Carte des Événements</h2>
+            
+            <p>Cette carte interactive est offerte gratuitement par <strong><a href="https://techduquartier.ca" target="_blank">Tech du Quartier</a></strong> pour aider les résidents à découvrir les événements culturels, sportifs et communautaires qui se déroulent à Montréal.</p>
+            
+            <p>Toutes les informations affichées sont tirées en direct du portail des <a href="https://donnees.montreal.ca/" target="_blank">données ouvertes de la Ville de Montréal</a>. Utilisez les filtres pour affiner votre recherche et cliquez sur un marqueur pour obtenir tous les détails !</p>
+            
+            <p>Ce projet de carte est open source et le code source peut être consulté sur <a href="https://github.com/alexis-tdq/carte-mtl" target="_blank">GitHub</a>.</p>
         </div>
     </div>
 

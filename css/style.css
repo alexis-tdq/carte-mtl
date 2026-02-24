@@ -26,9 +26,39 @@ body {
     text-align: center;
     font-weight: 500;
     color: #555;
+    transition: opacity 0.3s ease, visibility 0.3s;
 }
 .map-message.hidden {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* --- Floating Brand Logo --- */
+#brand-logo-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    width: 60px;
+    height: 60px;
+    background: #ce3e18; /* Navy background to match main site */
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#brand-logo-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+#brand-logo-link img {
+    width: 65%;
+    height: 65%;
+    object-fit: contain;
 }
 
 /* --- Controls Container --- */
@@ -37,8 +67,8 @@ body {
     bottom: 20px;
     right: 20px;
     z-index: 1001;
-    width: 108px; /* Width to hold two buttons side-by-side */
-    height: 162px; /* Height for three rows of buttons */
+    width: 108px;
+    height: 162px;
 }
 
 /* --- Zoom Controls (Top Right) --- */
@@ -53,14 +83,14 @@ body {
 }
 
 #zoom-controls-container .map-control-button {
-    position: relative; /* Override absolute positioning for flex layout */
+    position: relative; 
     top: auto;
     right: auto;
 }
 
 /* --- Map Control Buttons --- */
 .map-control-button {
-    position: absolute; /* Each button is positioned within the container */
+    position: absolute;
     width: 44px;
     height: 44px;
     background: rgba(255, 255, 255, 0.7);
@@ -83,8 +113,7 @@ body {
 #about-button { top: 0; right: 0; }
 #geolocation-button { top: 54px; right: 0; }
 #filter-toggle { top: 108px; right: 0; }
-#reset-button-map { top: 108px; right: 54px; } /* Positioned to the left of the filter toggle */
-
+#reset-button-map { top: 108px; right: 54px; } 
 
 #reset-button-map.hidden {
     opacity: 0;
@@ -92,11 +121,12 @@ body {
     transform: scale(0.5);
 }
 
+/* Updated active filter toggle to use Brand Color */
 #filter-toggle.active {
-    background-color: rgba(0, 122, 255, 0.2);
+    background-color: rgba(217, 83, 30, 0.2); 
 }
 #filter-toggle.active svg {
-    fill: #007aff;
+    fill: #D9531E; 
 }
 
 .map-control-button svg {
@@ -106,11 +136,10 @@ body {
     transition: fill 0.3s ease;
 }
 
-
 /* --- Filter Controls --- */
 #filter-container {
     position: absolute;
-    bottom: 192px; /* Positioned above the controls container */
+    bottom: 192px; 
     right: 20px;
     z-index: 1000;
     background: rgba(255, 255, 255, 0.7);
@@ -140,7 +169,7 @@ body {
 
 .filter-control label {
     font-size: 12px;
-    color: #333;
+    color: #0f172a; /* Navy */
     margin-bottom: 5px;
     font-weight: 600;
 }
@@ -157,24 +186,26 @@ body {
     width: 200px;
 }
 
+/* Updated select dropdown arrow to Navy */
 .filter-control select {
     padding-right: 30px;
     cursor: pointer;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007AFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230f172a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 8px top 50%;
     background-size: .65em auto;
 }
 
 .filter-control input {
-    width: 176px; /* Adjust for padding */
+    width: 176px;
 }
 
+/* Updated Reset Filters button to Brand Color */
 #reset-filters {
     padding: 8px 12px;
     font-size: 14px;
     font-weight: 600;
-    color: #007aff;
+    color: #D9531E; 
     background-color: transparent;
     border: none;
     border-radius: 6px;
@@ -184,7 +215,7 @@ body {
 }
 
 #reset-filters:hover {
-    background-color: rgba(0, 122, 255, 0.1);
+    background-color: rgba(217, 83, 30, 0.1); 
 }
 
 /* --- Mobile Responsiveness --- */
@@ -194,7 +225,7 @@ body {
         top: 20px;
         right: 20px;
         left: 20px;
-        bottom: auto; /* Reset bottom for mobile */
+        bottom: auto; 
         max-height: calc(100% - 100px);
         overflow-y: auto;
     }
@@ -208,14 +239,20 @@ body {
         width: calc(100% - 24px);
     }
     
-    /* --- Cacher les boutons de zoom sur mobile --- */
     #zoom-controls-container {
         display: none !important;
     }
+    
+    #brand-logo-link {
+        width: 50px;
+        height: 50px;
+        top: 15px;
+        left: 15px;
+    }
 }
 
-
 /* --- Marker & Popup Styles --- */
+/* Updated primary marker to Brand Color */
 .custom-marker-icon .marker-pin {
     position: absolute;
     width: 30px;
@@ -223,34 +260,29 @@ body {
     left: 50%;
     top: 50%;
     margin-left: -15px;
-    margin-top: -30px; /* Position tip at anchor */
-    background: #007aff;
+    margin-top: -30px; 
+    background: #D9531E; 
     border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
     border: 1px solid white;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-/* --- Highlighted Marker Animation --- */
 .marker-highlight .marker-pin {
     animation: pulse-marker 1.5s infinite;
 }
 
 @keyframes pulse-marker {
-    0% {
-        transform: rotate(-45deg) scale(1);
-    }
-    50% {
-        transform: rotate(-45deg) scale(1.2);
-    }
-    100% {
-        transform: rotate(-45deg) scale(1);
-    }
+    0% { transform: rotate(-45deg) scale(1); }
+    50% { transform: rotate(-45deg) scale(1.2); }
+    100% { transform: rotate(-45deg) scale(1); }
 }
 
 .custom-marker-icon .marker-pin::after {
     content: none;
 }
+
+/* Updated clusters to use shades of Navy and Brand colors */
 .custom-cluster {
     background-clip: padding-box;
     border-radius: 50%;
@@ -263,9 +295,10 @@ body {
     border: 3px solid rgba(255, 255, 255, 0.5);
     box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
 }
-.custom-cluster.small { background-color: rgba(29, 185, 84, 0.9); }
-.custom-cluster.medium { background-color: rgba(240, 180, 0, 0.9); }
-.custom-cluster.large { background-color: rgba(255, 70, 70, 0.9); }
+.custom-cluster.small { background-color: rgba(15, 23, 42, 0.9); } /* Navy */
+.custom-cluster.medium { background-color: rgba(217, 83, 30, 0.85); } /* Brand */
+.custom-cluster.large { background-color: rgba(192, 69, 21, 0.95); } /* Darker Brand */
+
 .leaflet-popup-content-wrapper {
     background: #ffffff;
     border-radius: 8px;
@@ -280,8 +313,9 @@ body {
     background: #ffffff;
     box-shadow: none;
 }
+/* Updated links inside popup to Brand Color */
 .custom-popup a {
-    color: #007aff;
+    color: #D9531E;
     text-decoration: none;
 }
 .custom-popup a:hover {
@@ -298,13 +332,14 @@ body {
 }
 
 /* --- User Location Marker --- */
+/* Updated user location to Navy Color to differentiate from events */
 .user-location-marker .pulse {
     width: 20px;
     height: 20px;
-    background: #007aff;
+    background: #0f172a; 
     border-radius: 50%;
     border: 2px solid #fff;
-    box-shadow: 0 0 0 0 rgba(0, 122, 255, 1);
+    box-shadow: 0 0 0 0 rgba(15, 23, 42, 1);
     transform: scale(1);
     animation: pulse-animation 2s infinite;
 }
@@ -312,17 +347,15 @@ body {
 @keyframes pulse-animation {
     0% {
         transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7);
+        box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.7);
     }
-
     70% {
         transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
+        box-shadow: 0 0 0 10px rgba(15, 23, 42, 0);
     }
-
     100% {
         transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
+        box-shadow: 0 0 0 0 rgba(15, 23, 42, 0);
     }
 }
 
@@ -366,15 +399,16 @@ body {
 
 .modal-content h2 {
     margin-top: 0;
-    color: #333;
+    color: #0f172a; /* Navy */
 }
 
 .modal-content p {
     color: #555;
 }
 
+/* Updated modal links to Brand Color */
 .modal-content a {
-    color: #007aff;
+    color: #D9531E;
     font-weight: 600;
     text-decoration: none;
 }
@@ -397,5 +431,5 @@ body {
 }
 
 .close-button:hover {
-    color: #333;
+    color: #0f172a;
 }
